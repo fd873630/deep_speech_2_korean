@@ -5,7 +5,6 @@ Implementation of DeepSpeech2 for PyTorch. The repo supports training/testing an
 ## Installation
 
 ### Docker
-
 To use the image with a GPU you'll need to have [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) installed.
 
 ```bash
