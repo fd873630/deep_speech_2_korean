@@ -27,4 +27,5 @@ FNAME = 'KsponScript_'
 filenum = 1348
 format = '.txt'
 
+print("잘나오나?이거 뭔가 이상한데")
 print(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"))
