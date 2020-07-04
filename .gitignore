@@ -105,3 +105,13 @@ models/
 data/*.csv
 data/*_dataset/
 .vscode/
+
+# package file
+apex
+ctcdecode
+data/AI_hub/
+data/AI_hubs
+innovators.csv
+outputs
+total.txt
+warp-ctc

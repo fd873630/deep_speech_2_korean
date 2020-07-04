@@ -82,6 +82,7 @@ def train(cfg):
         if latest_checkpoint:
             cfg.checkpointing.continue_from = latest_checkpoint
 
+    # 여기서 부터
     if cfg.checkpointing.continue_from:  # Starting from previous model
         state = TrainingState.load_state(state_path=to_absolute_path(cfg.checkpointing.continue_from))
         model = state.model
@@ -95,7 +96,7 @@ def train(cfg):
     else:
         # Initialise new model training
         with open(to_absolute_path(cfg.data.labels_path)) as label_file:
-            labels = json.load(label_file)
+            labels = json.load(label_file) # label(a,b,c ...)
 
         audio_conf = dict(sample_rate=cfg.data.sample_rate,
                           window_size=cfg.data.window_size,

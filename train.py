@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 from deepspeech_pytorch.training import train
 
 
-@hydra.main(config_path="config", strict=False)
+@hydra.main(config_path="config.yaml", strict=False)
 def hydra_main(cfg: DictConfig):
     train(cfg=cfg)
 
