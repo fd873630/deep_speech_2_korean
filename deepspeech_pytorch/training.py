@@ -69,6 +69,7 @@ def train(cfg):
                                            checkpoint_per_iteration=cfg.checkpointing.checkpoint_per_iteration,
                                            save_n_recent_models=cfg.checkpointing.save_n_recent_models)
 
+    #visdom 사용할건지 tensorboard 사용할건지
     if main_proc and cfg.visualization.visdom:
         visdom_logger = VisdomLogger(id=cfg.visualization.id,
                                      num_epochs=cfg.training.epochs)

@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+
+
 '''
 https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training
 '''
@@ -26,6 +30,3 @@ BASE_PATH = "data/AI_hub/KsponSpeech_01/KsponSpeech_0001/KsponSpeech_"
 FNAME = 'KsponScript_'
 filenum = 1348
 format = '.txt'
-
-print("잘나오나?이거 뭔가 이상한데")
-print(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"))

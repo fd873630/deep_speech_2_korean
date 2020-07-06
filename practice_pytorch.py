@@ -1,6 +1,6 @@
 import csv
 
-
+'''
 end_number = 0 
 
 # make AIhub csv for deep speech 2
@@ -8,10 +8,7 @@ end_number = 0
 with open('innovators.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     for i in range(1,125):
-        '''
-        여기는 일단 KsponSpeech_1 ~ 124 까지 폴더
-        '''
-
+    
         path_name = "/home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub/KsponSpeech_01/KsponSpeech_"
         
 
@@ -56,3 +53,11 @@ with open('innovators.csv', 'w', newline='') as file:
             # ex) /home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub/KsponSpeech_01/KsponSpeech_0124/KsponSpeech_123017
             
             writer.writerow([total + ".wav", total + ".txt"])
+'''
+
+
+rnns =[]
+
+rnns.append(('0', 1))
+
+print(rnns)

@@ -1,6 +1,7 @@
 import math
 from collections import OrderedDict
 
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -12,7 +13,7 @@ supported_rnns = {
 }
 supported_rnns_inv = dict((v, k) for k, v in supported_rnns.items())
 
-
+#batch normalization
 class SequenceWise(nn.Module):
     def __init__(self, module):
         """
@@ -21,7 +22,7 @@ class SequenceWise(nn.Module):
         :param module: Module to apply input to.
         """
         super(SequenceWise, self).__init__()
-        self.module = module
+        self.module = module # batchnorm1d(num_features, eps,~~~)
 
     def forward(self, x):
         t, n = x.size(0), x.size(1)
@@ -92,7 +93,7 @@ class BatchRNN(nn.Module):
     def forward(self, x, output_lengths):
         if self.batch_norm is not None:
             x = self.batch_norm(x)
-        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
+        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths) # 요게 긴거 기준으로 패딩 해주는거
         x, h = self.rnn(x)
         x, _ = nn.utils.rnn.pad_packed_sequence(x)
         if self.bidirectional:
@@ -142,6 +143,7 @@ class DeepSpeech(nn.Module):
         window_size = self.audio_conf["window_size"]
         num_classes = len(self.labels)
 
+        # conv layer
         self.conv = MaskConv(nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
             nn.BatchNorm2d(32),
@@ -156,14 +158,19 @@ class DeepSpeech(nn.Module):
         rnn_input_size = int(math.floor(rnn_input_size + 2 * 10 - 21) / 2 + 1)
         rnn_input_size *= 32
 
+        # RNN layer
         rnns = []
+	
         rnn = BatchRNN(input_size=rnn_input_size, hidden_size=rnn_hidden_size, rnn_type=rnn_type,
                        bidirectional=bidirectional, batch_norm=False)
         rnns.append(('0', rnn))
+
         for x in range(nb_layers - 1):
             rnn = BatchRNN(input_size=rnn_hidden_size, hidden_size=rnn_hidden_size, rnn_type=rnn_type,
                            bidirectional=bidirectional)
             rnns.append(('%d' % (x + 1), rnn))
+        
+        # OrderedDict - 이름과 레이어를 같이 만듬
         self.rnns = nn.Sequential(OrderedDict(rnns))
         self.lookahead = nn.Sequential(
             # consider adding batch norm?
@@ -183,17 +190,20 @@ class DeepSpeech(nn.Module):
     def forward(self, x, lengths):
         lengths = lengths.cpu().int()
         output_lengths = self.get_seq_lens(lengths)
+        
+        # conv layer 
         x, _ = self.conv(x, output_lengths)
 
         sizes = x.size()
+
         x = x.view(sizes[0], sizes[1] * sizes[2], sizes[3])  # Collapse feature dimension
         x = x.transpose(1, 2).transpose(0, 1).contiguous()  # TxNxH
 
         for rnn in self.rnns:
-            x = rnn(x, output_lengths)
-
+            x = rnn(x, output_lengths) # ex) 268 x 20 x 1024
+        
         if not self.bidirectional:  # no need for lookahead layer in bidirectional
-            x = self.lookahead(x)
+            x = self.lookahead(x) # 요게 sortaGrad 인가?
 
         x = self.fc(x)
         x = x.transpose(0, 1)
