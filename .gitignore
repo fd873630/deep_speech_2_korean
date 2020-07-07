@@ -115,6 +115,9 @@ outputs
 total.txt
 warp-ctc
 move_file_for_AIhub
+make_data_list
+make_csv_3part
+make_data_list
 
 # csv
 AI_hub_all.csv
