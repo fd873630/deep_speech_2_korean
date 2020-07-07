@@ -13,6 +13,8 @@ deep speech를 통해 한국어 E2E(end to end) ASR를 연습하는 프로젝트
 AI Hub 음성 데이터는 다음 링크에서 신청 후 다운로드 하실 수 있습니다.
 
 AI Hub 한국어 음성 데이터 : http://www.aihub.or.kr/aidata/105
+ex) KsponSpeech_Filenum.pcm
+    KsponSpeech_Filenum.txt
 
 # Preprocessing
 
@@ -21,6 +23,8 @@ https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training
 다음을 참조하여 작성하였습니다.
 
 작성에 도움주신 Kim Soohwan께 감사드립니다.
+
+자세한 내용은 wiki에 기술해 놓겠습니다.
 
 # Contacts
 
