@@ -14,7 +14,7 @@ AI Hub 음성 데이터는 다음 링크에서 신청 후 다운로드 하실 �
 
 AI Hub 한국어 음성 데이터 : http://www.aihub.or.kr/aidata/105
 
-# preprocessing
+# Preprocessing
 
 https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training
 
