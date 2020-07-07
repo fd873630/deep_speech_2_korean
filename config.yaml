@@ -5,8 +5,8 @@ training:
   dist_backend: nccl # If using distribution, the backend to be used
   epochs: 70 # Number of Training Epochs
 data:
-  train_manifest: data/libri_train_manifest.csv
-  val_manifest: data/libri_val_manifest.csv
+  train_manifest: data/AI_hub_train_manifest.csv
+  val_manifest: data/AI_hub_val_manifest.csv
   sample_rate: 16000 # The sample rate for the data/model features
   batch_size: 20 # Batch size for training
   num_workers: 4 # Number of workers used in data-loading

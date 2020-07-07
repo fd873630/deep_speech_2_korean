@@ -115,4 +115,7 @@ outputs
 total.txt
 warp-ctc
 move_file_for_AIhub
-pcm_to_wav
+
+# csv
+AI_hub_all.csv
+AI_hub_all_shuffle.csv

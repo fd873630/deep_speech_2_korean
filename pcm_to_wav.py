@@ -1,7 +1,11 @@
 '''
 https://m.blog.naver.com/PostView.nhn?blogId=aimldl&logNo=221559323232&proxyReferer=https:%2F%2Fwww.google.com%2F
+
+다음을 참고하여 pcm 파일을 wav로 변환 하였다.
 '''
 import wave
+
+
 
 def filenum_padding(filenum):
     """
@@ -45,7 +49,6 @@ def pcm2wav( pcm_file, wav_file, channels=1, bit_depth=16, sampling_rate=16000 )
 scr_file_path = "/home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub_pcm/KsponSpeech_"
 dir_file_path = "/home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub_wav/KsponSpeech_"
 
-#622546
 for j in range(1, 622546):
         num_1 = filenum_padding(j)
         src_2 = scr_file_path + num_1

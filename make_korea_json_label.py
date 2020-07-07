@@ -52,11 +52,14 @@ for i in range(1,622546):
         txts = f.readline()
     
     for j in range(len(txts)):      
-        if txts[j] == "\n":
+        if txts[j] == "A":
             print(dir_file_path + file_path_2 + last_num + ".txt")
         
     if i%5000 == 0:
         print(i)
+
+
+        
 '''
 for i in range(1,622546):
     last_num = filenum_padding(i)

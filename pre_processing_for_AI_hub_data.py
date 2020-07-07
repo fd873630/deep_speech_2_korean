@@ -81,50 +81,5 @@ def sentence_filter(raw_sentence):
 
 # 위의 과정을 끝내면 < % > 특수문자가 남게되는데, 해당 특수문자는 '프로', '퍼센트' 두 가지 발음이 가능하므로, 
 # 직접 확인한 결과 총 8개의 파일에서 등장했고, 4개의 **'프로'**와 4개의 '퍼센트' 이루어지는 것을 확인하고 수작업으로 변환했다.
-# 087797, 215401, 284574, 397184, 501006, 502173, 542363, 581483
+# -> 087797, 215401, 284574, 397184, 501006, 502173, 542363, 581483
 
-'''
-for i in range(1,622546):
-    #%가 들어가 있는 파일을 찾는다.
-    last_num = filenum_padding(i)
-    
-    origin_file = file_path + file_path_2 + last_num + ".txt"
-    
-    with open(dir_file_path + file_path_2 + last_num + ".txt" , "r") as f:
-        txts = f.readline()
-        for j in range(len(txts)):
-           if txts[j] == "%" :
-               print(dir_file_path + file_path_2 + last_num + ".txt")
-
-    if i%5000 == 0:
-        print(i)
-'''
-
-
-
-file_path = "/home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub/"
-file_path_2 = "KsponSpeech_"
-dir_file_path = "/home/jhjeong/jiho_deep/deepspeech.pytorch/data/AI_hub_txt/"
-
-#622546
-
-
-'''
-for i in range(1,622546):
-    last_num = filenum_padding(i)
-    
-    origin_file = file_path + file_path_2 + last_num + ".txt"
-    
-    with open(dir_file_path + file_path_2 + last_num + ".txt" , "r") as f:
-        txts = f.readline()
-                
-
-    with open(dir_file_path + file_path_2 + last_num + ".txt" , "w") as ff:
-        ff.write(sentence_filter(txts))
-    
-    if i%5000 == 0 :
-        with open(dir_file_path + file_path_2 + last_num + ".txt" , "r") as fff:
-            a = fff.readline()
-            print(i)
-            print(a)
-'''
