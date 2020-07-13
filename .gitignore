@@ -121,7 +121,10 @@ make_data_list
 practice
 log_dir
 practice.py
+erase_blank.py
 
 # csv
 AI_hub_all.csv
 AI_hub_all_shuffle.csv
+
+jiho_result/

@@ -40,6 +40,11 @@ class AverageMeter(object):
 
 
 def train(cfg):
+
+    # 결과를 저장하기 위한 txt파일 초기화
+    with open("/home/jhjeong/jiho_deep/deepspeech.pytorch/jiho_result/result.txt", "w") as ff:
+        ff.write("학습 시작! \n")
+
     # Set seeds for determinism
     torch.manual_seed(cfg.training.seed)
     torch.cuda.manual_seed_all(cfg.training.seed)
@@ -110,6 +115,8 @@ def train(cfg):
 
         rnn_type = cfg.model.rnn_type.lower()
         assert rnn_type in supported_rnns, "rnn_type should be either lstm, rnn or gru"
+        
+        # DeepSpeech 모델을 생성
         model = DeepSpeech(rnn_hidden_size=cfg.model.hidden_size,
                            nb_layers=cfg.model.hidden_layers,
                            labels=labels,
@@ -122,18 +129,22 @@ def train(cfg):
 
     # Data setup
     evaluation_decoder = GreedyDecoder(model.labels)  # Decoder used for validation
+    
+    # Data path 정리 
     train_dataset = SpectrogramDataset(audio_conf=model.audio_conf,
                                        manifest_filepath=to_absolute_path(cfg.data.train_manifest),
                                        labels=model.labels,
                                        normalize=True,
                                        speed_volume_perturb=cfg.augmentation.speed_volume_perturb,
                                        spec_augment=cfg.augmentation.spec_augment)
+    
     test_dataset = SpectrogramDataset(audio_conf=model.audio_conf,
                                       manifest_filepath=to_absolute_path(cfg.data.val_manifest),
                                       labels=model.labels,
                                       normalize=True,
                                       speed_volume_perturb=False,
                                       spec_augment=False)
+
     if not is_distributed:
         train_sampler = DSRandomSampler(dataset=train_dataset,
                                         batch_size=cfg.data.batch_size,
@@ -142,6 +153,8 @@ def train(cfg):
         train_sampler = DSElasticDistributedSampler(dataset=train_dataset,
                                                     batch_size=cfg.data.batch_size,
                                                     start_index=state.training_step)
+
+    # data load 하는 부분
     train_loader = AudioDataLoader(dataset=train_dataset,
                                    num_workers=cfg.data.num_workers,
                                    batch_sampler=train_sampler)
@@ -151,6 +164,7 @@ def train(cfg):
 
     model = model.to(device)
     parameters = model.parameters()
+
     if cfg.optimizer.adam:
         optimizer = torch.optim.AdamW(parameters,
                                       lr=cfg.optimizer.learning_rate,
@@ -167,6 +181,7 @@ def train(cfg):
     model, optimizer = amp.initialize(model, optimizer,
                                       opt_level=cfg.apex.opt_level,
                                       loss_scale=cfg.apex.loss_scale)
+    
     if state.optim_state is not None:
         optimizer.load_state_dict(state.optim_state)
         amp.load_state_dict(state.amp_state)
@@ -177,6 +192,7 @@ def train(cfg):
 
     if is_distributed:
         model = DistributedDataParallel(model, device_ids=[device_id])
+
     print(model)
     print("Number of parameters: %d" % DeepSpeech.get_param_size(model))
 
@@ -192,11 +208,14 @@ def train(cfg):
         state.set_epoch(epoch=epoch)
         train_sampler.set_epoch(epoch=epoch)
         train_sampler.reset_training_step(training_step=state.training_step)
+        
+        #train data있는거 가져다 사용하겠다.
         for i, (data) in enumerate(train_loader, start=state.training_step):
             state.set_training_step(training_step=i)
             inputs, targets, input_percentages, target_sizes = data
             input_sizes = input_percentages.mul_(int(inputs.size(3))).int()
-            # measure data loading time
+            
+            # measure data loading time   
             data_time.update(time.time() - end)
             inputs = inputs.to(device)
 
@@ -246,6 +265,15 @@ def train(cfg):
               'Time taken (s): {epoch_time:.0f}\t'
               'Average Loss {loss:.3f}\t'.format(epoch + 1, epoch_time=epoch_time, loss=state.avg_loss))
 
+        with open("/home/jhjeong/jiho_deep/deepspeech.pytorch/jiho_result/result.txt", "a") as ff:
+                ff.write("\n")
+                ff.write("train -> ")
+                ff.write("epoch : ")
+                ff.write(str(epoch+1))
+                ff.write(" loss : ")
+                ff.write(str(state.avg_loss))
+                ff.write("\n")
+                
         with torch.no_grad():
             wer, cer, output_data = evaluate(test_loader=test_loader,
                                              device=device,
@@ -259,9 +287,18 @@ def train(cfg):
                           cer_result=cer)
 
         print('Validation Summary Epoch: [{0}]\t'
-              'Average WER {wer:.3f}\t'
-              'Average CER {cer:.3f}\t'.format(epoch + 1, wer=wer, cer=cer))
+              'Average CER {cer:.3f}\t'.format(epoch + 1, cer=cer))
 
+        with open("/home/jhjeong/jiho_deep/deepspeech.pytorch/jiho_result/result.txt", "a") as ff:
+                ff.write("\n")
+                ff.write("val -> ")
+                ff.write("epoch : ")
+                ff.write(str(epoch+1))
+                ff.write(" cer : ")
+                ff.write(str(cer))
+                ff.write("\n")
+
+        # 텐서보드에 업데이트함
         if main_proc and cfg.visualization.visdom:
             visdom_logger.update(epoch, state.result_state)
         if main_proc and cfg.visualization.tensorboard:

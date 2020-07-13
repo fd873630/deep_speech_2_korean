@@ -90,6 +90,14 @@ class InferenceBatchSoftmax(nn.Module):
 
 
 class BatchRNN(nn.Module):
+    '''
+    RNNcell -> through time backpropagation
+    RNN -> one pass of backpropagation
+
+    LSTMCell takes ONE input x_t. You need to make a loop in order to do one pass of backprop through time.
+    LSTM takes a SEQUENCE of inputs x_1,x_2,…,x_T. No need to write a loop to do one pass of backprop through time.
+    https://discuss.pytorch.org/t/lstm-and-lstmcell/7488
+    '''
     def __init__(self, input_size, hidden_size, rnn_type=nn.LSTM, bidirectional=False, batch_norm=True):
         super(BatchRNN, self).__init__()
         self.input_size = input_size
@@ -169,6 +177,7 @@ class DeepSpeech(nn.Module):
             nn.Hardtanh(0, 20, inplace=True)
         ))
         # Based on above convolutions and spectrogram size using conv formula (W - F + 2P)/ S+1
+        # 위에서 convlayer를 통과했으므로 패딩과 스트라이드에 따라서 rnn_input_size를 조절해줘야 한다.
         rnn_input_size = int(math.floor((sample_rate * window_size) / 2) + 1)
         rnn_input_size = int(math.floor(rnn_input_size + 2 * 20 - 41) / 2 + 1)
         rnn_input_size = int(math.floor(rnn_input_size + 2 * 10 - 21) / 2 + 1)
@@ -220,7 +229,7 @@ class DeepSpeech(nn.Module):
             x = rnn(x, output_lengths) # ex) 268 x 20 x 1024
         
         if not self.bidirectional:  # no need for lookahead layer in bidirectional
-            x = self.lookahead(x) # 요게 sortaGrad 인가?
+            x = self.lookahead(x)
 
         x = self.fc(x)
         x = x.transpose(0, 1)
