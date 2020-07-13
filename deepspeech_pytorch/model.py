@@ -32,6 +32,19 @@ class SequenceWise(nn.Module):
         return x
 
     def __repr__(self):
+        '''
+        __repr__ should return a printable representation of the object,
+         most likely one of the ways possible to create this object. 
+        example:
+        >>> class Point:
+        ...   def __init__(self, x, y):
+        ...     self.x, self.y = x, y
+        ...   def __repr__(self):
+        ...     return 'Point(x=%s, y=%s)' % (self.x, self.y)
+        >>> p = Point(1, 2)
+        >>> p
+        Point(x=1, y=2)
+        '''
         tmpstr = self.__class__.__name__ + ' (\n'
         tmpstr += self.module.__repr__()
         tmpstr += ')'
@@ -93,9 +106,12 @@ class BatchRNN(nn.Module):
     def forward(self, x, output_lengths):
         if self.batch_norm is not None:
             x = self.batch_norm(x)
-        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths) # 요게 긴거 기준으로 패딩 해주는거
+        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
+        #PackedSequence object 를 얻는다. 
         x, h = self.rnn(x)
         x, _ = nn.utils.rnn.pad_packed_sequence(x)
+        #pack된걸 unpack한다.
+
         if self.bidirectional:
             x = x.view(x.size(0), x.size(1), 2, -1).sum(2).view(x.size(0), x.size(1), -1)  # (TxNxH*2) -> (TxNxH) by sum
         return x
@@ -160,7 +176,8 @@ class DeepSpeech(nn.Module):
 
         # RNN layer
         rnns = []
-	
+
+        # 첫번재 RNNlayer는 batch_norm 하지 않는다. 왜??
         rnn = BatchRNN(input_size=rnn_input_size, hidden_size=rnn_hidden_size, rnn_type=rnn_type,
                        bidirectional=bidirectional, batch_norm=False)
         rnns.append(('0', rnn))

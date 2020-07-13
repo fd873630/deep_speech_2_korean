@@ -10,12 +10,12 @@ data:
   sample_rate: 16000 # The sample rate for the data/model features
   batch_size: 20 # Batch size for training
   num_workers: 4 # Number of workers used in data-loading
-  labels_path: labels.json # Contains tokens for model output
+  labels_path: labels_korean.json # Contains tokens for model output
   window_size: .02 # Window size for spectrogram generation (seconds)
   window_stride: .01 # Window stride for spectrogram generation (seconds)
   window: hamming # Window type for spectrogram generation
 model:
-  rnn_type: lstm # Type of RNN to use in modeel, rnn/gru/lstm are supported
+  rnn_type: gru # Type of RNN to use in modeel, rnn/gru/lstm are supported
   hidden_size: 1024 # Hidden size of RNN Layer
   hidden_layers: 5 # Number of RNN layers
   bidirectional: true # Use BiRNNs. If False, uses lookahead conv
