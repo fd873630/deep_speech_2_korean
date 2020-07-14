@@ -1,11 +1,15 @@
 # Intro
 
 deep speech를 통해 한국어 E2E(end to end) ASR를 연습하는 프로젝트 입니다.
+  
+코드 : https://github.com/SeanNaren/deepspeech.pytorch  
+  
+논문 링크 : https://arxiv.org/abs/1512.02595
 
-단기적은 계획
-1. https://github.com/SeanNaren/deepspeech.pytorch 의 코드 리뷰(주석 추가)
-2. AI hub data 전처리
-3. 한국어 데이터로 모델을 평가
+# Paper review
+Wiki 부분에 논문을 읽고 간단히 정리했습니다.
+
+링크 : https://github.com/fd873630/deep_speech_2_korean/wiki/Deep-speech-2-%EB%A6%AC%EB%B7%B0-(with-code)
 
 # Data set
 
